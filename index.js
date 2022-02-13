@@ -1,6 +1,5 @@
 // IMPORTS
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/loaders/GLTFLoader.js";
 
 //SCENE
@@ -44,13 +43,9 @@ const light2 = new THREE.PointLight(0xffffff, 1);
 scene.add(light1);
 scene.add(light2);
 
-//CONTROLS
-// const controls = new OrbitControls(camera, renderer.domElement);
-// controls.update();
-
 //OBJECT
 const loader = new GLTFLoader();
-let mixer;
+let gl, mixer;
 loader.load(
   "models/Animation.glb",
   function (gltf) {
@@ -65,6 +60,7 @@ loader.load(
 
     mixer = new THREE.AnimationMixer(gltf.scene);
     mixer.clipAction(gltf.animations[0]).play();
+    gl = gltf;
   },
 
   function (xhr) {
@@ -76,15 +72,41 @@ loader.load(
   }
 );
 //RENDER LOOP
-const clock = new THREE.Clock();
 requestAnimationFrame(render);
 function render() {
   renderer.render(scene, camera);
   requestAnimationFrame(render);
 }
 
-document.onwheel = () => {
-  console.log("SK");
-  const delta = clock.getDelta();
-  mixer.update(delta);
-};
+let time = 0;
+let delay = 0;
+let acceleration = 2;
+let isStopped = false;
+document.querySelector("#canvas").addEventListener("wheel", (e) => {
+  isStopped = false;
+  if (e.deltaY > 0) {
+    let t = setTimeout(() => {
+      delay += (time - delay) * acceleration;
+      mixer.setTime(delay);
+      time += 0.05;
+      if (isStopped) {
+        time += 0.05;
+        delay += (time - delay) * acceleration;
+        mixer.setTime(delay);
+      }
+    }, 150);
+    isStopped = true;
+  } else {
+    let t = setTimeout(() => {
+      delay += (time - delay) * acceleration;
+      mixer.setTime(delay);
+      time -= 0.15;
+      if (isStopped) {
+        time += 0.05;
+        delay += (time - delay) * acceleration;
+        mixer.setTime(delay);
+      }
+    }, 150);
+    isStopped = true;
+  }
+});
