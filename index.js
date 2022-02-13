@@ -2,6 +2,9 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/loaders/GLTFLoader.js";
 
+//HELPERS
+const degrees_to_radians = (deg) => (deg * Math.PI) / 180.0;
+
 //SCENE
 const scene = new THREE.Scene();
 
@@ -22,11 +25,13 @@ const camera = new THREE.PerspectiveCamera(
   3000
 );
 
-camera.position.x = 10;
-camera.position.y = -10;
-camera.position.z = 25;
-camera.rotateX(Math.PI / 30);
-camera.rotateY(Math.PI / 4);
+camera.position.x = 0;
+camera.position.y = 0;
+camera.position.z = 55;
+camera.rotation.x = 0;
+camera.rotation.y = 0;
+camera.rotation.z = 0;
+// camera.rotateZ(degrees_to_radians(0));
 window.addEventListener(
   "resize",
   function () {
@@ -49,8 +54,10 @@ let gl, mixer;
 loader.load(
   "models/Animation.glb",
   function (gltf) {
-    scene.position.x = -10;
-    scene.position.y = -10;
+    scene.rotation.x = 0;
+    scene.rotation.y = -90;
+    scene.rotation.z = 0;
+    // scene.position.y = -10;
     scene.add(gltf.scene);
     gltf.animations; // Array<THREE.AnimationClip>
     gltf.scene; // THREE.Group
@@ -80,33 +87,16 @@ function render() {
 
 let time = 0;
 let delay = 0;
-let acceleration = 2;
-let isStopped = false;
+let acceleration = 0.2;
 document.querySelector("#canvas").addEventListener("wheel", (e) => {
-  isStopped = false;
+  console.log(e, gl);
   if (e.deltaY > 0) {
-    let t = setTimeout(() => {
-      delay += (time - delay) * acceleration;
-      mixer.setTime(delay);
-      time += 0.05;
-      if (isStopped) {
-        time += 0.05;
-        delay += (time - delay) * acceleration;
-        mixer.setTime(delay);
-      }
-    }, 150);
-    isStopped = true;
+    delay += (time - delay) * acceleration;
+    mixer.setTime(delay);
+    time += 0.15;
   } else {
-    let t = setTimeout(() => {
-      delay += (time - delay) * acceleration;
-      mixer.setTime(delay);
-      time -= 0.15;
-      if (isStopped) {
-        time += 0.05;
-        delay += (time - delay) * acceleration;
-        mixer.setTime(delay);
-      }
-    }, 150);
-    isStopped = true;
+    delay += (time - delay) * acceleration;
+    mixer.setTime(delay);
+    time -= 0.15;
   }
 });
