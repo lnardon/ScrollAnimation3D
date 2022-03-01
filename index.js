@@ -89,13 +89,13 @@ let time = 0;
 let delay = 0;
 let acceleration = 0.2;
 document.querySelector("#canvas").addEventListener("wheel", (e) => {
-  console.log(e, gl);
+  console.log(e);
   if (e.deltaY > 0) {
     delay += (time - delay) * acceleration;
     mixer.setTime(delay);
     time += 0.15;
   } else {
-    delay += (time - delay) * acceleration;
+    delay -= (time - delay) * acceleration;
     mixer.setTime(delay);
     time -= 0.15;
   }
