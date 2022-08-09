@@ -2,9 +2,6 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/loaders/GLTFLoader.js";
 
-//HELPERS
-const degrees_to_radians = (deg) => (deg * Math.PI) / 180.0;
-
 //SCENE
 const scene = new THREE.Scene();
 
@@ -27,11 +24,10 @@ const camera = new THREE.PerspectiveCamera(
 
 camera.position.x = 0;
 camera.position.y = 0;
-camera.position.z = 55;
+camera.position.z = 13;
 camera.rotation.x = 0;
 camera.rotation.y = 0;
 camera.rotation.z = 0;
-// camera.rotateZ(degrees_to_radians(0));
 window.addEventListener(
   "resize",
   function () {
@@ -54,10 +50,6 @@ let gl, mixer;
 loader.load(
   "models/Animation.glb",
   function (gltf) {
-    scene.rotation.x = 0;
-    scene.rotation.y = -90;
-    scene.rotation.z = 0;
-    // scene.position.y = -10;
     scene.add(gltf.scene);
     gltf.animations; // Array<THREE.AnimationClip>
     gltf.scene; // THREE.Group
@@ -89,14 +81,17 @@ let time = 0;
 let delay = 0;
 let acceleration = 0.2;
 document.querySelector("#canvas").addEventListener("wheel", (e) => {
-  console.log(e);
   if (e.deltaY > 0) {
     delay += (time - delay) * acceleration;
     mixer.setTime(delay);
-    time += 0.15;
+    time += 0.06;
   } else {
     delay -= (time - delay) * acceleration;
     mixer.setTime(delay);
-    time -= 0.15;
+    time -= 0.06;
   }
+});
+
+window.addEventListener("load", (e) => {
+  alert("Scroll Up or Down to play the 3D animation.");
 });
