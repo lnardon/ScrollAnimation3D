@@ -39,8 +39,14 @@ window.addEventListener(
 );
 
 //LIGHTS
-const light1 = new THREE.AmbientLight(0xffffff, 0.5);
-const light2 = new THREE.PointLight(0xffffff, 1);
+const light1 = new THREE.AmbientLight(0x003fff, 0.75);
+const light2 = new THREE.PointLight(0xffff62, 0.6);
+light1.position.x = 6;
+light1.position.y = 7;
+light1.position.z = 4;
+light2.position.x = 0;
+light2.position.y = 15;
+light2.position.z = 5;
 scene.add(light1);
 scene.add(light2);
 
@@ -79,16 +85,16 @@ function render() {
 
 let time = 0;
 let delay = 0;
-let acceleration = 0.2;
+let acceleration = 0.15;
 document.querySelector("#canvas").addEventListener("wheel", (e) => {
   if (e.deltaY > 0) {
     delay += (time - delay) * acceleration;
     mixer.setTime(delay);
-    time += 0.06;
+    time += 0.065;
   } else {
     delay -= (time - delay) * acceleration;
     mixer.setTime(delay);
-    time -= 0.06;
+    time -= 0.065;
   }
 });
 
